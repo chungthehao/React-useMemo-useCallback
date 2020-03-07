@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -13,18 +13,24 @@ const App = () => {
   const incrementCount2 = useCallback(() => setCount2(count2 + 1), [count2]);
 
   // This func does NOT need to be re-generated (a new version), it doesn't have any dependencies
-  const logName = useCallback(() => console.log('Henry Chung'), []); // Generating this func new every single time on every single render
+  // const logName = useCallback(() => console.log('Henry Chung'), []); // Generating this func new every single time on every single render
 
   // functions.add(logName);
-  functions.add(incrementCount1);
-  functions.add(incrementCount2);
+  // functions.add(incrementCount1);
+  // functions.add(incrementCount2);
 
-  console.log(functions);
+  // console.log(functions);
 
-  const doSomethingComplicated = () => {
+  // useMemo: Show giá trị kết quả đã cache khi cả component re-render mà dependencies của hàm ko đổi
+  // useMemo bao hàm luôn tính năng của useCallback
+  const doSomethingComplicated = useMemo(() => {
     console.log('I am computing something complex');
     return ((count1 * 1000) % 12.4) * 51000 - 4000;
-  };
+  }, [count1]);
+
+  functions.add(doSomethingComplicated);
+
+  console.log(functions);
 
   return (
     <div className='App'>
@@ -37,9 +43,9 @@ const App = () => {
         Count2: {count2}
         <button onClick={incrementCount2}>Increase Count2</button>
 
-        <button onClick={logName}>Log Name</button>
+        {/*<button onClick={logName}>Log Name</button>*/}
 
-        {/*complexValue: {doSomethingComplicated()}*/}
+        complexValue: {doSomethingComplicated}
       </header>
     </div>
   );
